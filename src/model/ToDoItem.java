@@ -32,7 +32,7 @@ public class ToDoItem implements Serializable {
         this.done = done;
     }
 
-    public void setContent(String aValue) {
+    public void setContent(String content) {
         this.content = content;
     }
 }

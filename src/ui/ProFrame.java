@@ -1,13 +1,20 @@
 package ui;
 
-import model.TableModel;
-import model.ToDoItem;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.io.*;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.WindowConstants;
+
+import model.TableModel;
+import model.ToDoItem;
+import rss.RssItem;
+import rss.RssParser;
 
 public class ProFrame extends JFrame {
 
@@ -26,31 +33,28 @@ public class ProFrame extends JFrame {
         setSize(width, height);
         setTitle("Programování 2");
 
-        JPanel toolBar = new JPanel();
-        add(toolBar, BorderLayout.NORTH);
+        JPanel toolbar = new JPanel();
+        add(toolbar, BorderLayout.NORTH);
 
         JButton button = new JButton();
         button.setText("Přidat poznámku");
-        toolBar.add(button);
+        toolbar.add(button);
 
         JButton saveButton = new JButton();
         saveButton.setText("Uložit");
-        toolBar.add(saveButton);
+        toolbar.add(saveButton);
 
         JButton loadButton = new JButton();
         loadButton.setText("Načíst");
-        toolBar.add(loadButton);
-
+        toolbar.add(loadButton);
 
         button.addActionListener(action -> {
-            ToDoItem item = new ToDoItem("Test obsah");
+            ToDoItem item = new ProDialog().getItem();
             model.add(item);
         });
-
         saveButton.addActionListener(action -> {
             saveItems();
         });
-
         loadButton.addActionListener(action -> {
             loadItems();
         });
@@ -61,17 +65,38 @@ public class ProFrame extends JFrame {
         add(new JScrollPane(table), BorderLayout.CENTER);
         pack();
 
-        setLocationRelativeTo(null); //center monitoru
+        setLocationRelativeTo(null); //center okna na monitoru
+
+        parse();
+    }
+
+    private void parse() {
+        try {
+
+            RssParser parser = new RssParser(
+                    new FileInputStream(
+                            new File("download.xml")));
+
+            List<RssItem> rssItems = parser.parseItems();
+            for (RssItem rssItem : rssItems){
+                System.out.println(rssItem.toString());
+            }
+        }catch (FileNotFoundException e){
+
+        }
     }
 
     private void saveItems() {
         try {
-
-            ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(new File("our.db")));
+            ObjectOutputStream stream =
+                    new ObjectOutputStream(
+                            new FileOutputStream(
+                                    new File("our.db")
+                            )
+                    );
             stream.writeObject(model.getItems());
             stream.flush();
             stream.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -79,15 +104,18 @@ public class ProFrame extends JFrame {
 
     private void loadItems() {
         try {
-
-            ObjectInputStream stream = new ObjectInputStream(new FileInputStream(new File("our.db")));
+            ObjectInputStream stream = new ObjectInputStream(
+                    new FileInputStream(
+                            new File("our.db")
+                    )
+            );
             List<ToDoItem> items = (List<ToDoItem>) stream.readObject();
             stream.close();
             model.setItems(items);
             model.fireTableDataChanged();
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }

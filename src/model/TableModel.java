@@ -1,8 +1,9 @@
 package model;
 
-import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.table.AbstractTableModel;
 
 public class TableModel extends AbstractTableModel {
 
@@ -13,10 +14,14 @@ public class TableModel extends AbstractTableModel {
         items = new ArrayList<>();
     }
 
-    public List<ToDoItem> getItems(){
-        return items;
+    public void add(ToDoItem item){
+        items.add(item);
+        fireTableDataChanged();
     }
 
+    public List<ToDoItem> getItems() {
+        return items;
+    }
 
     @Override
     public int getRowCount() {
@@ -39,27 +44,22 @@ public class TableModel extends AbstractTableModel {
         return null;
     }
 
-    public void add(ToDoItem item){
-        items.add(item);
-        fireTableDataChanged();
-    }
-
     @Override
-    public String getColumnName(int column){
+    public String getColumnName(int column) {
         return columns[column];
     }
 
     @Override
-    public Class<?> getColumnClass(int columnIndex){
+    public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex){
-            case 0: case 1: return String.class ;
+            case 0: case 1: return String.class;
             case 2: return Boolean.class;
         }
         return super.getColumnClass(columnIndex);
     }
 
     @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex){
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
         return columnIndex == 0 || columnIndex == 2;
     }
 
@@ -69,13 +69,12 @@ public class TableModel extends AbstractTableModel {
         if (columnIndex == 0){
             item.setContent((String) aValue);
         }
-        if(columnIndex == 2){
+        if (columnIndex == 2){
             item.setDone((boolean) aValue);
         }
     }
 
-    public void setItems(List<ToDoItem> items){
+    public void setItems(List<ToDoItem> items) {
         this.items = items;
     }
-
 }
