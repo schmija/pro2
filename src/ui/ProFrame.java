@@ -2,14 +2,12 @@ package ui;
 
 import java.awt.BorderLayout;
 import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 import model.TableModel;
 import model.ToDoItem;
@@ -33,8 +31,11 @@ public class ProFrame extends JFrame {
         setSize(width, height);
         setTitle("Programování 2");
 
+        setLayout(new BorderLayout());
         JPanel toolbar = new JPanel();
         add(toolbar, BorderLayout.NORTH);
+        JPanel toolbar2 = new JPanel();
+        add(toolbar2);
 
         JButton button = new JButton();
         button.setText("Přidat poznámku");
@@ -48,6 +49,14 @@ public class ProFrame extends JFrame {
         loadButton.setText("Načíst");
         toolbar.add(loadButton);
 
+        JButton urlBtn = new JButton();
+        urlBtn.setText("Zobrazit");
+        toolbar2.add(urlBtn);
+
+        JTextField textField = new JTextField();
+        textField.setColumns(10);
+        toolbar2.add(textField);
+
         button.addActionListener(action -> {
             ToDoItem item = new ProDialog().getItem();
             model.add(item);
@@ -58,6 +67,10 @@ public class ProFrame extends JFrame {
         loadButton.addActionListener(action -> {
             loadItems();
         });
+        urlBtn.addActionListener(action->{
+            addFeed(textField.getText());
+        });
+
 
         model = new TableModel();
 
@@ -67,21 +80,31 @@ public class ProFrame extends JFrame {
 
         setLocationRelativeTo(null); //center okna na monitoru
 
-        parse();
+
+//        parse();
     }
 
-    private void parse() {
+    private void parse(String url) {
         try {
 
-            RssParser parser = new RssParser(
-                    new FileInputStream(
-                            new File("download.xml")));
+
+//            RssParser parser = new RssParser(
+//                    new FileInputStream(
+//                            new File("download.xml")));
+
+//            String url = "http://servis.idnes.cz/rss.aspx?c=zpravodaj";
+
+            URLConnection connection = new URL(url).openConnection();
+            connection.connect();
+            InputStream stream = connection.getInputStream();
+            RssParser parser = new RssParser(stream);
 
             List<RssItem> rssItems = parser.parseItems();
             for (RssItem rssItem : rssItems){
                 System.out.println(rssItem.toString());
             }
-        }catch (FileNotFoundException e){
+            stream.close();
+        }catch (Exception e){
 
         }
     }
@@ -115,6 +138,46 @@ public class ProFrame extends JFrame {
             model.fireTableDataChanged();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void addFeed(String url){
+        try {
+            File file = new File("feed.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            FileWriter fileWriter = new FileWriter(file,true);
+            BufferedWriter writer = new BufferedWriter(fileWriter);
+
+            writer.write(url);
+            writer.newLine();
+            writer.flush();
+
+        }catch (Exception e){
+
+        }
+    }
+
+    private void readFeeds(){
+        try {
+            List<String> urls = new ArrayList<>();
+            File file = new File("feed.txt");
+
+            FileReader fileReader = new FileReader(file);
+            BufferedReader reader = new BufferedReader(fileReader);
+
+            String line;
+            while ((line = reader.readLine()) != null){
+                urls.add(line);
+            }
+            for (String url : urls){
+                System.out.println(url);
+            }
+
+        }catch (Exception e){
+
         }
     }
 

@@ -80,3 +80,6 @@ public class RssParser {
         }
     }
 }
+
+
+//http://servis.idnes.cz/rss.aspx?c=zpravodaj
