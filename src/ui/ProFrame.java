@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.swing.*;
 
+import model.FeedItem;
 import model.TableModel;
 import model.ToDoItem;
 import rss.RssItem;
@@ -16,7 +17,7 @@ import rss.RssParser;
 
 public class ProFrame extends JFrame {
 
-    static int width = 800;
+    static int width = 1400;
     static int height = 600;
     private TableModel model;
 
@@ -31,7 +32,7 @@ public class ProFrame extends JFrame {
         setSize(width, height);
         setTitle("Programování 2");
 
-        setLayout(new BorderLayout());
+        setLayout(new BoxLayout(getContentPane(), 1));
         JPanel toolbar = new JPanel();
         add(toolbar, BorderLayout.NORTH);
         JPanel toolbar2 = new JPanel();
@@ -49,13 +50,6 @@ public class ProFrame extends JFrame {
         loadButton.setText("Načíst");
         toolbar.add(loadButton);
 
-        JButton urlBtn = new JButton();
-        urlBtn.setText("Zobrazit");
-        toolbar2.add(urlBtn);
-
-        JTextField textField = new JTextField();
-        textField.setColumns(10);
-        toolbar2.add(textField);
 
         button.addActionListener(action -> {
             ToDoItem item = new ProDialog().getItem();
@@ -67,10 +61,14 @@ public class ProFrame extends JFrame {
         loadButton.addActionListener(action -> {
             loadItems();
         });
-        urlBtn.addActionListener(action->{
-            addFeed(textField.getText());
-        });
 
+        JTextField field = new JTextField("Vaše_URL_ADRESA");
+        JButton loadUrlBtn = new JButton("Načíst URL");
+        toolbar2.add(field);
+        toolbar2.add(loadUrlBtn);
+        loadUrlBtn.addActionListener(action -> {
+            addFeed(field.getText());
+        });
 
         model = new TableModel();
 
@@ -80,19 +78,21 @@ public class ProFrame extends JFrame {
 
         setLocationRelativeTo(null); //center okna na monitoru
 
-
-//        parse();
+        //parse();
+        readFeeds();
     }
 
     private void parse(String url) {
         try {
 
+            /*
+            RssParser parser
+                    = new RssParser(
+                    new FileInputStream(
+                            new File("download.xml")));
+                            */
 
-//            RssParser parser = new RssParser(
-//                    new FileInputStream(
-//                            new File("download.xml")));
-
-//            String url = "http://servis.idnes.cz/rss.aspx?c=zpravodaj";
+            //String url = "http://www.eurofotbal.cz/feed/rss/premier-league/";
 
             URLConnection connection = new URL(url).openConnection();
             connection.connect();
@@ -100,11 +100,12 @@ public class ProFrame extends JFrame {
             RssParser parser = new RssParser(stream);
 
             List<RssItem> rssItems = parser.parseItems();
-            for (RssItem rssItem : rssItems){
+            for (RssItem rssItem : rssItems) {
                 System.out.println(rssItem.toString());
             }
             stream.close();
-        }catch (Exception e){
+
+        } catch (Exception e) {
 
         }
     }
@@ -141,26 +142,26 @@ public class ProFrame extends JFrame {
         }
     }
 
-    private void addFeed(String url){
+    private void addFeed(String url) {
         try {
+
             File file = new File("feed.txt");
             if (!file.exists()) {
                 file.createNewFile();
             }
 
-            FileWriter fileWriter = new FileWriter(file,true);
+            FileWriter fileWriter = new FileWriter(file, true);
             BufferedWriter writer = new BufferedWriter(fileWriter);
 
             writer.write(url);
             writer.newLine();
             writer.flush();
 
-        }catch (Exception e){
-
+        } catch (Exception e) {
         }
     }
 
-    private void readFeeds(){
+    private void readFeeds(){ //časem List<String>
         try {
             List<String> urls = new ArrayList<>();
             File file = new File("feed.txt");
@@ -172,13 +173,49 @@ public class ProFrame extends JFrame {
             while ((line = reader.readLine()) != null){
                 urls.add(line);
             }
-            for (String url : urls){
+            for (String url : urls) { //test
                 System.out.println(url);
             }
 
-        }catch (Exception e){
+        } catch (Exception e){
 
         }
     }
 
+    private List<FeedItem> getAllFeeds(){
+        List<FeedItem> feedItems = new ArrayList<>();
+        //parse ze souboru
+        try {
+            File file = new File("feedItems.csv");
+            FileReader reader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            bufferedReader.readLine(); //přeskočit první řádek
+            String line;
+            while ((line = bufferedReader.readLine()) != null){
+                feedItems.add(FeedItem.parseFromCSV(line));
+            }
+        }catch (Exception e){
+
+        }
+
+        return feedItems;
+    }
+
+    private void saveAllFeeds(List<FeedItem> items){
+        try {
+            File file = new File("feedItems.csv");
+            FileWriter writer = new FileWriter(file);
+            BufferedWriter bufferedWriter = new BufferedWriter(writer);
+            bufferedWriter.write("url;addedMillis;shouldShow;alias");
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
+            for (FeedItem item : items){
+                bufferedWriter.write(item.toString());
+                bufferedWriter.newLine();
+                bufferedWriter.flush();
+            }
+        }catch (Exception e){
+
+        }
+    }
 }
