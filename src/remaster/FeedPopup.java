@@ -1,24 +1,24 @@
 package remaster;
 
-import javax.swing.*;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
-public class PopUp extends JPopupMenu {
+public class FeedPopup extends JPopupMenu {
 
-    public PopUp(FeedPopUpListener listener) {
+    public FeedPopup(FeedPopupListener listener) {
+
         JMenuItem menu1 = new JMenuItem("Nezobrazovat");
-        JMenuItem menu2 = new JMenuItem("Nezobrazovat zdroj");
+        JMenuItem menu2 = new JMenuItem("Nezobrzovat zdroj");
         JMenuItem menu3 = new JMenuItem("Smazat zdroj");
 
-        menu1.addActionListener( a -> {
+        menu1.addActionListener(a -> {
             listener.hideFeed();
         });
-
         menu2.addActionListener(a -> {
             listener.hideFeedSource();
         });
-
         menu3.addActionListener(a -> {
-            listener.deleteFeesSource();
+            listener.deleteFeedSource();
         });
 
         add(menu1);

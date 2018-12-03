@@ -1,10 +1,12 @@
 package remaster;
 
-import java.awt.*;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import rss.RssItem;
 
@@ -23,15 +25,13 @@ public class CardView extends JPanel {
         setLayout(new WrapLayout());
         setSize(ITEM_WIDTH, HEIGHT);
         setTitle(item.getTitle());
-        setDescription(item.getDescription());
-
         if (item.getDescription().length() > maxCharCount){
-            setDescription(item.getDescription().substring(0, 50) + "...");
-        }else {
+            setDescription(item.getDescription().substring(0, 50)+"...");
+        } else {
             setDescription(item.getDescription());
         }
         setInfo(item.getLink());
-        setComponentPopupMenu(new PopUp(new FeedPopUpListener() {
+        setComponentPopupMenu(new FeedPopup(new FeedPopupListener() {
             @Override
             public void hideFeed() {
 
@@ -40,20 +40,19 @@ public class CardView extends JPanel {
             @Override
             public void hideFeedSource() {
                 item.getFeedItem().setShouldShow(false);
-
-                //todo uložit
+                // TODO uložit
             }
 
             @Override
-            public void deleteFeesSource() {
+            public void deleteFeedSource() {
 
             }
         }));
-
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (SwingUtilities.isLeftMouseButton(e)){
+                if (SwingUtilities.isLeftMouseButton(e)
+                        && !getComponentPopupMenu().isVisible()) {
                     new InfoDialog(String.format("%s%s%s",
                             startHTMLDialog, item.getDescription(), endHTML));
                 }

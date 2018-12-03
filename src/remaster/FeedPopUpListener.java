@@ -1,8 +1,8 @@
 package remaster;
 
-public interface FeedPopUpListener {
+public interface FeedPopupListener {
 
     void hideFeed();
     void hideFeedSource();
-    void deleteFeesSource();
+    void deleteFeedSource();
 }

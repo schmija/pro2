@@ -19,10 +19,10 @@ import model.FeedItem;
 public class Utils {
 
     public static void saveFeedItem(FeedItem item){
-        //TODO projít CSV
-        //TODO naleznout správný řádek (pomocí url)
-        //TODO celý řádek přepsat
-        //TODO hotovo, opustit cyklus a dále nic neměnit
+        // TODO - projít CSV
+        // TODO - naleznout správný řádek (pomocí URL)
+        // TODO - celý řádek přepsat
+        // TODO - hotovo, opustit cyklus a dále nic neměnit
     }
 
     // metoda pro ukládání feed items
