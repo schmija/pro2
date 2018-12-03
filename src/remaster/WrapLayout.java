@@ -1,7 +1,13 @@
 package remaster;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Insets;
+
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 public class WrapLayout extends FlowLayout {
 
@@ -13,6 +19,7 @@ public class WrapLayout extends FlowLayout {
     public WrapLayout(int align) {
         super(align);
     }
+
     public WrapLayout(int align, int hGap, int vGap) {
         super(align, hGap, vGap);
     }

@@ -1,13 +1,29 @@
 package ui;
 
 import java.awt.BorderLayout;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 
 import model.FeedItem;
 import model.TableModel;
@@ -161,7 +177,7 @@ public class ProFrame extends JFrame {
         }
     }
 
-    private void readFeeds(){ //časem List<String>
+    private void readFeeds() { //časem List<String>
         try {
             List<String> urls = new ArrayList<>();
             File file = new File("feed.txt");
@@ -170,52 +186,16 @@ public class ProFrame extends JFrame {
             BufferedReader reader = new BufferedReader(fileReader);
 
             String line;
-            while ((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 urls.add(line);
             }
             for (String url : urls) { //test
                 System.out.println(url);
             }
 
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
 
-    private List<FeedItem> getAllFeeds(){
-        List<FeedItem> feedItems = new ArrayList<>();
-        //parse ze souboru
-        try {
-            File file = new File("feedItems.csv");
-            FileReader reader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(reader);
-            bufferedReader.readLine(); //přeskočit první řádek
-            String line;
-            while ((line = bufferedReader.readLine()) != null){
-                feedItems.add(FeedItem.parseFromCSV(line));
-            }
-        }catch (Exception e){
-
-        }
-
-        return feedItems;
-    }
-
-    private void saveAllFeeds(List<FeedItem> items){
-        try {
-            File file = new File("feedItems.csv");
-            FileWriter writer = new FileWriter(file);
-            BufferedWriter bufferedWriter = new BufferedWriter(writer);
-            bufferedWriter.write("url;addedMillis;shouldShow;alias");
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
-            for (FeedItem item : items){
-                bufferedWriter.write(item.toString());
-                bufferedWriter.newLine();
-                bufferedWriter.flush();
-            }
-        }catch (Exception e){
-
-        }
-    }
 }
