@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import rss.RssItem;
+import utils.Utils;
 
 public class CardView extends JPanel {
 
@@ -16,12 +17,12 @@ public class CardView extends JPanel {
     private final int COMPONENT_WIDTH = 160;
     private final int HEIGHT = 1;
 
-    final String startHTML = "<html><p style='width: " + COMPONENT_WIDTH + " px'>";
-    final String startHTMLDialog = "<html><p style='width: " + 600 + " px'>";
-    final String endHTML = "</p></html>";
-    final int maxCharCount = 50;
+    private final String startHTML = "<html><p style='width: " + COMPONENT_WIDTH + " px'>";
+    private final String startHTMLDialog = "<html><p style='width: " + 600 + " px'>";
+    private final String endHTML = "</p></html>";
+    private final int maxCharCount = 50;
 
-    public CardView(RssItem item) {
+    public CardView(RssItem item, RssFrame frame) {
         setLayout(new WrapLayout());
         setSize(ITEM_WIDTH, HEIGHT);
         setTitle(item.getTitle());
@@ -40,7 +41,8 @@ public class CardView extends JPanel {
             @Override
             public void hideFeedSource() {
                 item.getFeedItem().setShouldShow(false);
-                // TODO uložit
+                Utils.saveFeedItem(item.getFeedItem());
+                frame.loadCards();
             }
 
             @Override

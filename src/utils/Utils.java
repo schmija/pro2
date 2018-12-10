@@ -19,10 +19,14 @@ import model.FeedItem;
 public class Utils {
 
     public static void saveFeedItem(FeedItem item){
-        // TODO - projít CSV
-        // TODO - naleznout správný řádek (pomocí URL)
-        // TODO - celý řádek přepsat
-        // TODO - hotovo, opustit cyklus a dále nic neměnit
+        List<FeedItem> allFeeds = getAllFeeds();
+        for (int i = 0; i < allFeeds.size(); i++) {
+            if (allFeeds.get(i).getUrl().equals(item.getUrl())){
+                allFeeds.set(i, item);
+                break;
+            }
+        }
+        saveAllFeeds(allFeeds);
     }
 
     // metoda pro ukládání feed items

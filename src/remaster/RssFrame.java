@@ -25,6 +25,23 @@ public class RssFrame extends JFrame {
 
     private JPanel content;
 
+
+    /*
+        Zápočet domácí úkol:
+
+        1) tvorba nového souboru blacklist (txt,CSV,.obj)
+        - v něm bude podle klíče uloženo který článek necheme zobrazovat
+        - vyvoláním popup menu na kartičce přes Nezobrazovat
+        - v místech načítání a filtrování článků, tyto z blacklistu nezobrazovat
+
+        2) filtry - nové dialogové okno s tabulkou (1 sloupec)
+        - slovo - a v načítání článků pokud obsahuje toto slovo,
+        pak článek zobrazujeme, jinak ne...
+     *
+     *
+     */
+
+
     public static void main(String[] args) {
         RssFrame frame = new RssFrame();
         frame.init(800, 600);
@@ -63,11 +80,11 @@ public class RssFrame extends JFrame {
 
     }
 
-    private void loadCards() { // TODO async
+    public void loadCards() { // TODO async
         content.removeAll();
         List<RssItem> list = loadItems();
         for (RssItem rssItem : list) {
-            content.add(new CardView(rssItem));
+            content.add(new CardView(rssItem, this));
         }
         content.updateUI();
     }
@@ -106,27 +123,6 @@ public class RssFrame extends JFrame {
                 nowItem.setFeedItem(item);
             }
             items.addAll(nowItems);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Deprecated
-    private void test() {
-        try {
-            /*
-            URLConnection conn = new URL("").openConnection();
-            conn.connect();
-            conn.getInputStream();*/
-            InputStream is = new FileInputStream(
-                    new File("download.xml"));
-
-            List<RssItem> items = new RssParser(is).parseItems();
-
-            for (RssItem item : items) {
-                content.add(new CardView(item));
-            }
 
         } catch (Exception e) {
             e.printStackTrace();
